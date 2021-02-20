@@ -1,6 +1,7 @@
 const cc = require('classcat')
 
 const isFunction = maybeFunction => typeof maybeFunction === "function"
+const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
 
 const variantClassBuilding = (schema = {}) => (options = {}) => {
   const {
@@ -12,7 +13,7 @@ const variantClassBuilding = (schema = {}) => (options = {}) => {
   const defaults = Object
     .entries(unprocessedDefaults)
     .reduce((out, [key, value]) => ({
-      ...out, [key]: isFunction(value) ? value(options) : value,
+      ...out, [key]: cif(value, options)
     }), {})
 
   return cc([
@@ -22,7 +23,7 @@ const variantClassBuilding = (schema = {}) => (options = {}) => {
         options[variantName] || defaults[variantName]
       ]
 
-      return isFunction(classes) ? classes(options) : classes
+      return cif(classes, options)
     }),
   ])
 }
