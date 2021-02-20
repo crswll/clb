@@ -1,13 +1,34 @@
-const lilo = require("./")
+const clb = require("./")
 
-test('no configuration', () => {
-  const builder = lilo()
+describe('strange edge cases', () => {
+  test('no schema passed should result in no classes', () => {
+    const builder = clb()
+    expect(builder({ color: 'red' })).toBe('')
+  })
 
-  expect(builder()).toEqual('')
+  test('no schema and no options should result in no classes as well', () => {
+    const builder = clb()
+
+    expect(builder()).toBe('')
+  })
+
+  test('variant that does not make sense does not error', () => {
+    const builder = clb({
+      variants: {
+        color: {
+          blue: 'blue',
+        },
+      },
+    })
+
+    expect(builder({ color: 'GREEN' })).toBe('')
+    expect(builder({ __DOES_NOT_EXIST__: 'GREEN' })).toBe('')
+  })
 })
 
-test('basic use cases', () => {
-  const builder = lilo({
+
+describe('basic use cases without default', () => {
+  const builder = clb({
     base: 'foo',
     variants: {
       color: {
@@ -22,7 +43,7 @@ test('basic use cases', () => {
     },
   })
 
-  const tests = [
+  describe.each([
     [ {}, 'foo'],
     [ { color: 'red' }, 'foo text-red-200' ],
     [ { color: 'blue' }, 'foo text-blue-200' ],
@@ -30,19 +51,19 @@ test('basic use cases', () => {
     [ { size: 'medium' }, 'foo text-md' ],
     [ { size: 'large' }, 'foo text-lg' ],
     [ { color: 'red', size: 'large' }, 'foo text-red-200 text-lg' ],
-  ]
-
-  tests.forEach(([input, output]) => {
-    expect(builder(input)).toEqual(output)
+  ])('builder(%o)', (options, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(builder(options)).toBe(expected)
+    })
   })
 })
 
-test('defaults are applied properly', () => {
-  const builder = lilo({
+describe('basic use cases with defaults', () => {
+  const builder = clb({
     base: 'foo',
     defaults: {
       color: 'red',
-      size: 'small'
+      size: 'medium',
     },
     variants: {
       color: {
@@ -57,41 +78,63 @@ test('defaults are applied properly', () => {
     },
   })
 
-  expect(builder()).toEqual('foo text-red-200 text-sm')
+  describe.each([
+    [ {}, 'foo text-red-200 text-md'],
+    [ { color: 'blue' }, 'foo text-blue-200 text-md'],
+    [ { color: 'blue', size: 'large' }, 'foo text-blue-200 text-lg'],
+  ])('builder(%o)', (options, expected) => {
+    test(`returns ${expected}`, () => {
+      expect(builder(options)).toBe(expected)
+    })
+  })
 })
 
-test('use variants with callbacks', () => {
-  const builder = lilo({
-    base: 'foo',
-    variants: {
-      color: {
-        red: props => ({
-          'text-red-200': !props.disabled,
-          'text-gray-200': props.disabled,
-        }),
-      },
-      disabled: {
-        true: 'opacity-25'
-      },
-    },
+describe('using callbacks', () => {
+  test('base should take a callback', () => {
+    const builder = clb({ base: props => `hi ${props.passThrough}` })
+
+    expect(builder({ passThrough: 'passThrough' })).toBe('hi passThrough')
   })
 
-  expect(builder({ color: 'red', disabled: false })).toEqual('foo text-red-200')
-  expect(builder({ color: 'red', disabled: true })).toEqual('foo text-gray-200 opacity-25')
-})
-
-test('use base with a callback', () => {
-  const builder = lilo({
-    base: props => ({
-      'special base colors': props.color,
-    }),
-    variants: {
-      color: {
-        red: 'text-red-200'
+  test('variant values can take a function', () => {
+    const builder = clb({
+      base: 'foo',
+      variants: {
+        color: {
+          red: props => ({
+            'text-red-200': !props.disabled,
+            'text-gray-200': props.disabled,
+          }),
+        },
+        disabled: {
+          true: 'pointer-events-none',
+        },
       },
-    },
+    })
+
+    expect(builder({ color: 'red', disabled: false })).toBe('foo text-red-200')
+    expect(builder({ color: 'red', disabled: true })).toBe('foo text-gray-200 pointer-events-none')
   })
 
-  expect(builder({ disabled: false })).toEqual('')
-  expect(builder({ color: 'red', disabled: true })).toEqual('special base colors text-red-200')
+  test('default values can be a callback as well', () => {
+    const builder = clb({
+      base: 'foo',
+      defaults: {
+        color: props => props.disabled ? 'gray' : 'red'
+      },
+      variants: {
+        color: {
+          red: 'text-red-200',
+          gray: 'text-gray-200',
+        },
+        disabled: {
+          true: 'pointer-events-none',
+        },
+      },
+    })
+
+    expect(builder({ disabled: false })).toBe('foo text-red-200')
+    expect(builder({ disabled: true })).toBe('foo text-gray-200 pointer-events-none')
+    expect(builder({ color: 'red', disabled: true })).toBe('foo text-red-200 pointer-events-none')
+  })
 })

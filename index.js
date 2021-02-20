@@ -5,9 +5,15 @@ const isFunction = maybeFunction => typeof maybeFunction === "function"
 const variantClassBuilding = (schema = {}) => (options = {}) => {
   const {
     base,
-    defaults = {},
+    defaults: unprocessedDefaults = {},
     variants = {},
   } = schema
+
+  const defaults = Object
+    .entries(unprocessedDefaults)
+    .reduce((out, [key, value]) => ({
+      ...out, [key]: isFunction(value) ? value(options) : value,
+    }), {})
 
   return cc([
     isFunction(base) ? base(options) : base,
