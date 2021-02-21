@@ -2,7 +2,7 @@
 
 clb (class list builder) is a small, utility function that builds a class list based on a simple api.
 
-It's like [classnames](https://github.com/JedWatson/classnames) and [Stitches](https://stitches.dev/) made a really lazy baby. It works really well with [tailwindcss](https://tailwindcss.com/) but will work with any css.
+It's like [classnames](https://github.com/JedWatson/classnames) and [Stitches](https://stitches.dev/) made a really lazy baby. It works really well with [tailwindcss](https://tailwindcss.com/) but will work with any functional / utility / atomic css approach.
 
 ## Install It
 
@@ -19,7 +19,7 @@ npm install clb
 const clb = require('clb')
 /*
   All `callbacks` mentioned below get the options
-  you pass it.
+  you pass it when calling the builder below.
 */
 const buttonBuilder = clb({
 
