@@ -932,6 +932,11 @@ classcat@^5.0.2:
   resolved "https://registry.yarnpkg.com/classcat/-/classcat-5.0.2.tgz#48c773229065d5986437ab7530f8f079518780e0"
   integrity sha512-aRqfsOf08OsMs5qe9/dJKvptxyg2N36q1b8tzk0SQqIToDnJd1jMdJRQFeaG7btagkGXqmf55NRrhZOHYjH3ag==
 
+classnames@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
 cliui@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-6.0.0.tgz#511d702c0c4e41ca156d7d0e96021f23e13225b1"

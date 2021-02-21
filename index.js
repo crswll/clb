@@ -1,4 +1,4 @@
-const cc = require('classcat')
+const classnames = require('classnames')
 
 const isFunction = maybeFunction => typeof maybeFunction === "function"
 const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
@@ -16,7 +16,7 @@ const variantClassBuilding = (schema = {}) => (options = {}) => {
       ...out, [key]: cif(value, options)
     }), {})
 
-  return cc([
+  return classnames([
     isFunction(base) ? base(options) : base,
     Object.keys({ ...defaults, ...variants }).map(variantName => {
       const classes = variants[variantName][
