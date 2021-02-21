@@ -3,7 +3,7 @@ const classnames = require('classnames')
 const isFunction = maybeFunction => typeof maybeFunction === "function"
 const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
 
-const variantClassBuilding = (schema = {}) => (options = {}) => {
+const classListBuilder = (schema = {}) => (options = {}) => {
   const {
     base,
     defaults: unprocessedDefaults = {},
@@ -28,4 +28,4 @@ const variantClassBuilding = (schema = {}) => (options = {}) => {
   ])
 }
 
-module.exports = variantClassBuilding
+module.exports = classListBuilder
