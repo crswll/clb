@@ -44,6 +44,7 @@ describe('basic use cases without default', () => {
   })
 
   describe.each([
+    [ undefined, 'foo'],
     [ {}, 'foo'],
     [ { color: 'red' }, 'foo text-red-200' ],
     [ { color: 'blue' }, 'foo text-blue-200' ],
@@ -112,7 +113,7 @@ describe('using callbacks', () => {
       },
     })
 
-    expect(builder({ color: 'red', disabled: false })).toBe('foo text-red-200')
+    expect(builder({ color: 'red'})).toBe('foo text-red-200')
     expect(builder({ color: 'red', disabled: true })).toBe('foo text-gray-200 pointer-events-none')
   })
 
