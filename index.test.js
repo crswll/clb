@@ -139,3 +139,33 @@ describe('using callbacks', () => {
     expect(builder({ color: 'red', disabled: true })).toBe('foo text-red-200 pointer-events-none')
   })
 })
+
+describe('callback directly for a variant', () => {
+  test('we should be able to use the variant in the callback', () => {
+    const builder = clb({
+      base: 'flex',
+      variants: {
+        collapseBelow: props => ({
+          "flex-row": true,
+          "sm:flex-col": props.collapseBelow === "sm",
+          "md:flex-col": props.collapseBelow === "md",
+          "lg:flex-col": props.collapseBelow === "lg",
+        }),
+      },
+    })
+
+    expect(builder({ collapseBelow: "sm" })).toBe('flex flex-row sm:flex-col')
+  })
+
+  test('we should be able to use the variant in the callback', () => {
+    const builder = clb({
+      base: 'grid',
+      variants: {
+        gap: props => `gap-${props.gap} whoa cool`,
+      },
+    })
+
+    expect(builder({ gap: 1 })).toBe('grid gap-1 whoa cool')
+    expect(builder({ gap: 5 })).toBe('grid gap-5 whoa cool')
+  })
+})

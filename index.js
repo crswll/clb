@@ -19,11 +19,14 @@ const classListBuilder = (schema = {}) => (options = {}) => {
   return classnames([
     isFunction(base) ? base(options) : base,
     Object.keys({ ...defaults, ...variants }).map(variantName => {
-      const classes = variants[variantName][
-        options[variantName] || defaults[variantName]
-      ]
+      if (isFunction(variants[variantName])) {
+        return variants[variantName](options)
+      }
 
-      return cif(classes, options)
+      return cif(
+        variants[variantName][options[variantName] || defaults[variantName]],
+        options
+      )
     }),
   ])
 }

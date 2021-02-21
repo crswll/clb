@@ -110,3 +110,39 @@ buttonBuilder({ color: 'red', disabled: true })
 // -> font-serif rounded-2xl text-red-400 bg-red-200 cursor-not-allowed
 ```
 
+### Usage With React
+
+```jsx
+import clb from 'clb'
+
+const buttonClasses = clb({
+  base: 'font-serif rounded-2xl',
+  defaults: {
+    color: 'gray',
+  },
+  variants: {
+    color: {
+      gray: props => ({
+        'text-gray-800 bg-gray-800': !props.disabled,
+        'text-gray-400 bg-gray-200': props.disabled,
+      }),
+      red: props => ({
+        'text-red-800 bg-red-800': !props.disabled,
+        'text-red-400 bg-red-200': props.disabled,
+      }),
+    },
+    disabled: {
+      true: 'cursor-not-allowed',
+    },
+  },
+})
+
+const Button = props => {
+  const { color, disbled, text } = props
+  return (
+    <button className={buttonClasses({ color, disabled })}>{text}</button>
+  )
+}
+
+// <Button color="red" text="Whoa Red Button" />
+```
