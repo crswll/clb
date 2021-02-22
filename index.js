@@ -1,5 +1,7 @@
 const isFunction = maybeFunction => typeof maybeFunction === "function"
+const isBoolean = maybeFunction => typeof maybeFunction === "boolean"
 const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
+const toStringIfBoolean = value => isBoolean(value) ? String(value) : value
 
 // https://github.com/jorgebucaran/classcat
 function cc (names) {
@@ -43,7 +45,10 @@ const classListBuilder = (schema = {}) => (options = {}) => {
       }
 
       return cif(
-        variants[variantName][options[variantName] || defaults[variantName]],
+        variants[variantName][
+          toStringIfBoolean(options[variantName]) ||
+          defaults[variantName]
+        ],
         options
       )
     }),

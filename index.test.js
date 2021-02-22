@@ -39,6 +39,10 @@ describe('basic use cases without default', () => {
         medium: 'text-md',
         large: 'text-lg',
       },
+      disabled: {
+        true: 'opacity-50',
+        false: 'opacity-100',
+      },
     },
   })
 
@@ -51,6 +55,10 @@ describe('basic use cases without default', () => {
     [ { size: 'medium' }, 'foo text-md' ],
     [ { size: 'large' }, 'foo text-lg' ],
     [ { color: 'red', size: 'large' }, 'foo text-red-200 text-lg' ],
+    [ { disabled: true }, 'foo opacity-50' ],
+    [ { disabled: 'true' }, 'foo opacity-50' ],
+    [ { disabled: false }, 'foo opacity-100' ],
+    [ { disabled: 'false' }, 'foo opacity-100' ],
   ])('builder(%o)', (options, expected) => {
     test(`returns ${expected}`, () => {
       expect(builder(options)).toBe(expected)
@@ -64,6 +72,7 @@ describe('basic use cases with defaults', () => {
     defaults: {
       color: 'red',
       size: 'medium',
+      disabled: false,
     },
     variants: {
       color: {
@@ -75,13 +84,18 @@ describe('basic use cases with defaults', () => {
         medium: 'text-md',
         large: 'text-lg',
       },
+      disabled: {
+        true: 'opacity-50',
+        false: 'opacity-100',
+      },
     },
   })
 
   describe.each([
-    [ {}, 'foo text-red-200 text-md'],
-    [ { color: 'blue' }, 'foo text-blue-200 text-md'],
-    [ { color: 'blue', size: 'large' }, 'foo text-blue-200 text-lg'],
+    [ {}, 'foo text-red-200 text-md opacity-100'],
+    [ { color: 'blue' }, 'foo text-blue-200 text-md opacity-100'],
+    [ { color: 'blue', size: 'large' }, 'foo text-blue-200 text-lg opacity-100'],
+    [ { color: 'blue', disabled: true }, 'foo text-blue-200 text-md opacity-50'],
   ])('builder(%o)', (options, expected) => {
     test(`returns ${expected}`, () => {
       expect(builder(options)).toBe(expected)
@@ -127,13 +141,14 @@ describe('using callbacks', () => {
           red: 'text-red-200',
           gray: 'text-gray-200',
         },
-        disabled: {
-          true: 'pointer-events-none',
-        },
+        disabled: props => ({
+          'pointer-events-none': props.disabled,
+          'cursor-pointer': !props.disabled
+        }),
       },
     })
 
-    expect(builder({ disabled: false })).toBe('foo text-red-200')
+    expect(builder({ disabled: false })).toBe('foo text-red-200 cursor-pointer')
     expect(builder({ disabled: true })).toBe('foo text-gray-200 pointer-events-none')
     expect(builder({ color: 'red', disabled: true })).toBe('foo text-red-200 pointer-events-none')
   })
