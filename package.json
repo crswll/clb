@@ -9,9 +9,6 @@
   "keywords": [],
   "author": "Bill Criswell",
   "license": "MIT",
-  "dependencies": {
-    "classnames": "^2.2.6"
-  },
   "devDependencies": {
     "jest": "^26.6.3"
   }

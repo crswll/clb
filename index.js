@@ -1,7 +1,26 @@
-const classnames = require('classnames')
-
 const isFunction = maybeFunction => typeof maybeFunction === "function"
 const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
+
+// https://github.com/jorgebucaran/classcat
+function cc (names) {
+  if (typeof names === "string" || typeof names === "number") return "" + names
+
+  let out = ""
+
+  if (Array.isArray(names)) {
+    for (let i = 0, tmp; i < names.length; i++) {
+      if ((tmp = cc(names[i])) !== "") {
+        out += (out && " ") + tmp
+      }
+    }
+  } else {
+    for (let k in names) {
+      if (names[k]) out += (out && " ") + k
+    }
+  }
+
+  return out
+}
 
 const classListBuilder = (schema = {}) => (options = {}) => {
   const {
@@ -16,7 +35,7 @@ const classListBuilder = (schema = {}) => (options = {}) => {
       ...out, [key]: cif(value, options)
     }), {})
 
-  return classnames([
+  return cc([
     isFunction(base) ? base(options) : base,
     Object.keys({ ...defaults, ...variants }).map(variantName => {
       if (isFunction(variants[variantName])) {

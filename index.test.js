@@ -26,7 +26,6 @@ describe('strange edge cases', () => {
   })
 })
 
-
 describe('basic use cases without default', () => {
   const builder = clb({
     base: 'foo',
