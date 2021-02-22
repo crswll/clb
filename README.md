@@ -110,9 +110,12 @@ buttonBuilder({ color: 'red', disabled: true })
 // -> font-serif rounded-2xl text-red-400 bg-red-200 cursor-not-allowed
 ```
 
-### Usage With React
+### Usage With Vue / React / Others
 
-```jsx
+None of this code is actually tested but should be *pretty* close.
+
+**buttonClasses.js**
+```js
 import clb from 'clb'
 
 const buttonClasses = clb({
@@ -136,6 +139,11 @@ const buttonClasses = clb({
     },
   },
 })
+```
+
+**Button.jsx**
+```jsx
+import buttonClasses from "./buttonClasses"
 
 const Button = props => {
   const { color, disbled, text } = props
@@ -143,6 +151,29 @@ const Button = props => {
     <button className={buttonClasses({ color, disabled })}>{text}</button>
   )
 }
+```
 
-// <Button color="red" text="Whoa Red Button" />
+**Button.vue**
+```html
+<script>
+import buttonClasses from "./buttonClasses"
+
+export default {
+  props: ['color', 'disabled'],
+
+  // Can use `buttonClasses` as a method if you'd like, too!
+  computed: {
+    classes () {
+      return buttonClasses({
+        color: this.color,
+        disabled: this.disabled,
+      })
+    },
+  },
+}
+</script>
+
+<template>
+  <button :class="classes">Whoa Cool</button>
+</template>
 ```
