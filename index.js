@@ -1,5 +1,5 @@
 const isFunction = maybeFunction => typeof maybeFunction === "function"
-const isBoolean = maybeFunction => typeof maybeFunction === "boolean"
+const isBoolean = maybeBoolean => typeof maybeBoolean === "boolean"
 const cif = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
 const toStringIfBoolean = value => isBoolean(value) ? String(value) : value
 
