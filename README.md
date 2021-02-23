@@ -139,6 +139,8 @@ const buttonClasses = clb({
     },
   },
 })
+
+export default buttonClasses
 ```
 
 **Button.jsx**
