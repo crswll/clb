@@ -157,12 +157,12 @@ const Button = ({ color, disabled }) => (
 **Button.vue**
 ```vue
 <script>
-import buttonClasses from "./buttonClasses"
+  import buttonClasses from "./buttonClasses"
 
-export default {
-  props: ['color', 'disabled'],
-  methods: { buttonClasses }
-}
+  export default {
+    props: ['color', 'disabled'],
+    methods: { buttonClasses }
+  }
 </script>
 
 <template>
