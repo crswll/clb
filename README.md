@@ -145,15 +145,11 @@ const buttonClasses = clb({
 ```jsx
 import buttonClasses from "./buttonClasses"
 
-const Button = props => {
-  const { color, disbled } = props
-
-  return (
-    <button className={buttonClasses({ color, disabled })}>
-      Whoa Cool Button
-    </button>
-  )
-}
+const Button = ({ color, disabled }) => (
+  <button className={buttonClasses({ color, disabled })}>
+    Whoa Cool Button
+  </button>
+)
 ```
 
 **Button.vue**
