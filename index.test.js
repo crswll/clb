@@ -159,12 +159,11 @@ describe('callback directly for a variant', () => {
     const builder = clb({
       base: 'flex',
       variants: {
-        collapseBelow: props => ({
-          "flex-row": true,
-          "sm:flex-col": props.collapseBelow === "sm",
-          "md:flex-col": props.collapseBelow === "md",
-          "lg:flex-col": props.collapseBelow === "lg",
-        }),
+        collapseBelow: {
+          "sm": "flex-row sm:flex-col",
+          "md": "flex-row md:flex-col",
+          "lg": "flex-row lg:flex-col",
+        },
       },
     })
 

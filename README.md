@@ -146,34 +146,43 @@ const buttonClasses = clb({
 import buttonClasses from "./buttonClasses"
 
 const Button = props => {
-  const { color, disbled, text } = props
+  const { color, disbled } = props
+
   return (
-    <button className={buttonClasses({ color, disabled })}>{text}</button>
+    <button className={buttonClasses({ color, disabled })}>
+      Whoa Cool Button
+    </button>
   )
 }
 ```
 
 **Button.vue**
-```html
+```vue
 <script>
 import buttonClasses from "./buttonClasses"
 
 export default {
   props: ['color', 'disabled'],
-
-  // Can use `buttonClasses` as a method if you'd like, too!
-  computed: {
-    classes () {
-      return buttonClasses({
-        color: this.color,
-        disabled: this.disabled,
-      })
-    },
-  },
+  methods: { buttonClasses }
 }
 </script>
 
 <template>
-  <button :class="classes">Whoa Cool</button>
+  <button :class="buttonClasses({ color, disabled })">
+    Whoa Cool Button
+  </button>
 </template>
+```
+
+**Button.svelte** (thanks [JakeNavith](https://github.com/JakeNavith))
+```svelte
+<script>
+  import buttonClasses from "./buttonClasses"
+  export let color
+  export let disabled
+</script>
+
+<button class={buttonClasses({ color, disabled })}>
+  Whoa Cool Button
+</button>
 ```
