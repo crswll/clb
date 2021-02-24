@@ -38,7 +38,7 @@ const classListBuilder = (schema = {}) => (options = {}) => {
     }), {})
 
   return cc([
-    isFunction(base) ? base(options) : base,
+    cif(base, options),
     Object.keys({ ...defaults, ...variants }).map(variantName => {
       if (isFunction(variants[variantName])) {
         return variants[variantName](options)
