@@ -18,8 +18,8 @@ npm install clb
 ```js
 const clb = require('clb')
 /*
-  All `callbacks` mentioned below get the options
-  you pass it when calling the builder below.
+  All `callbacks` mentioned below get the default values merged
+  with the options you pass to the builder.
 */
 const buttonBuilder = clb({
 
