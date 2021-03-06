@@ -37,9 +37,17 @@ const classListBuilder = (schema = {}) => (options = {}) => {
       ...out, [key]: callIfFunction(value, options)
     }), {})
 
-  const mergedOptions = {
+  // Defaults should be used when the option value is `undefined`.
+  const optionsWithUndefinedRemoved = Object
+    .entries(options)
+    .reduce((out, [optionName, optionValue]) => {
+      if (optionValue === undefined) return out
+      return { ...out, [optionName]: optionValue }
+    }, {})
+
+  const callbackArguments = {
     ...defaults,
-    ...options,
+    ...optionsWithUndefinedRemoved,
   }
 
   return cc([
@@ -54,7 +62,7 @@ const classListBuilder = (schema = {}) => (options = {}) => {
           toStringIfBoolean(options[variantName]) ||
           defaults[variantName]
         ],
-        mergedOptions
+        callbackArguments
       )
     }),
   ])

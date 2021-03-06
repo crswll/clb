@@ -73,7 +73,6 @@ describe('basic use cases with defaults', () => {
       color: 'red',
       size: 'medium',
       disabled: false,
-      beWeird: true,
     },
     variants: {
       color: {
@@ -84,7 +83,6 @@ describe('basic use cases with defaults', () => {
         small: 'text-sm',
         medium: 'text-md',
         large: 'text-lg',
-        massive: ({ beWeird }) => beWeird ? 'text-5xl' : 'text-xs',
       },
       disabled: {
         true: 'opacity-50',
@@ -98,7 +96,6 @@ describe('basic use cases with defaults', () => {
     [ { color: 'blue' }, 'foo text-blue-200 text-md opacity-100'],
     [ { color: 'blue', size: 'large' }, 'foo text-blue-200 text-lg opacity-100'],
     [ { color: 'blue', disabled: true }, 'foo text-blue-200 text-md opacity-50'],
-    [ { size: 'massive' }, 'foo text-red-200 text-5xl opacity-100'],
   ])('builder(%o)', (options, expected) => {
     test(`returns ${expected}`, () => {
       expect(builder(options)).toBe(expected)
@@ -183,5 +180,59 @@ describe('callback directly for a variant', () => {
 
     expect(builder({ gap: 1 })).toBe('grid gap-1 whoa cool')
     expect(builder({ gap: 5 })).toBe('grid gap-5 whoa cool')
+  })
+})
+
+describe(`defaults that aren't variants`, () => {
+  test('if an option of undefined is provided it should use the default', () => {
+    const builder = clb({
+      base: 'foo',
+      defaults: {
+        tone: 'neutral',
+        type: 'outline',
+      },
+      variants: {
+        type: {
+          outline: ({ tone }) => ({
+            'color-neutral': tone === 'neutral',
+            'color-not-neutral': tone !== 'neutral',
+            'color-false': tone === false,
+            'color-null': tone === null,
+          })
+        },
+      },
+    })
+
+    expect(builder()).toBe('foo color-neutral')
+    expect(builder({ tone: 'neutral' })).toBe('foo color-neutral')
+    expect(builder({ tone: 'something else' })).toBe('foo color-not-neutral')
+
+    expect(builder({ tone: undefined })).toBe('foo color-neutral')
+    expect(builder({ tone: null })).toBe('foo color-not-neutral color-null')
+    expect(builder({ tone: false })).toBe('foo color-not-neutral color-false')
+  })
+
+  test('weird and likely bad key names like null, undefined', () => {
+    const builder = clb({
+      base: 'foo',
+      defaults: {
+        tone: 'neutral',
+      },
+      variants: {
+        tone: {
+          null: 'tone-null',
+          undefined: 'tone-undefined',
+          false: 'tone-false',
+          neutral: 'tone-neutral'
+        },
+      },
+    })
+
+    expect(builder()).toBe('foo tone-neutral')
+    expect(builder({ tone: 'neutral' })).toBe('foo tone-neutral')
+    expect(builder({ tone: 'something else' })).toBe('foo')
+    expect(builder({ tone: null })).toBe('foo tone-neutral')
+    expect(builder({ tone: undefined })).toBe('foo tone-neutral')
+    expect(builder({ tone: false })).toBe('foo tone-false')
   })
 })
