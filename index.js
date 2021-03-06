@@ -37,6 +37,11 @@ const classListBuilder = (schema = {}) => (options = {}) => {
       ...out, [key]: callIfFunction(value, options)
     }), {})
 
+  const mergedOptions = {
+    ...defaults,
+    ...options,
+  }
+
   return cc([
     callIfFunction(base, options),
     Object.keys({ ...defaults, ...variants }).map(variantName => {
@@ -44,12 +49,12 @@ const classListBuilder = (schema = {}) => (options = {}) => {
         return variants[variantName](options)
       }
 
-      return callIfFunction(
+      return variants[variantName] && callIfFunction(
         variants[variantName][
           toStringIfBoolean(options[variantName]) ||
           defaults[variantName]
         ],
-        options
+        mergedOptions
       )
     }),
   ])
