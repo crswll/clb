@@ -51,10 +51,10 @@ const classListBuilder = (schema = {}) => (options = {}) => {
   }
 
   return cc([
-    callIfFunction(base, options),
+    callIfFunction(base, callbackArguments),
     Object.keys({ ...defaults, ...variants }).map(variantName => {
       if (isFunction(variants[variantName])) {
-        return variants[variantName](options)
+        return variants[variantName](callbackArguments)
       }
 
       return variants[variantName] && callIfFunction(
