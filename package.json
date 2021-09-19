@@ -1,15 +1,24 @@
 {
   "name": "clb",
-  "version": "0.3.0",
-  "main": "index.js",
+  "version": "1.0.0",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "node build.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "classnames"
+  ],
   "author": "Bill Criswell",
   "license": "MIT",
   "devDependencies": {
+    "classcat": "^5.0.3",
+    "esbuild": "^0.12.28",
     "jest": "^27.2.0"
   }
 }
