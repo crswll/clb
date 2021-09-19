@@ -3,6 +3,7 @@ const clb = require("./")
 describe('strange edge cases', () => {
   test('no schema passed should result in no classes', () => {
     const builder = clb()
+
     expect(builder({ color: 'red' })).toBe('')
   })
 
@@ -66,10 +67,10 @@ describe('basic use cases without default', () => {
   })
 })
 
-describe('basic use cases with defaults', () => {
+describe('basic use cases with defaultVariants', () => {
   const builder = clb({
     base: 'foo',
-    defaults: {
+    defaultVariants: {
       color: 'red',
       size: 'medium',
       disabled: false,
@@ -103,119 +104,11 @@ describe('basic use cases with defaults', () => {
   })
 })
 
-describe('using callbacks', () => {
-  test('base should take a callback', () => {
-    const builder = clb({ base: props => `hi ${props.passThrough}` })
-
-    expect(builder({ passThrough: 'passThrough' })).toBe('hi passThrough')
-  })
-
-  test('variant values can take a function', () => {
-    const builder = clb({
-      base: 'foo',
-      variants: {
-        color: {
-          red: props => ({
-            'text-red-200': !props.disabled,
-            'text-gray-200': props.disabled,
-          }),
-        },
-        disabled: {
-          true: 'pointer-events-none',
-        },
-      },
-    })
-
-    expect(builder({ color: 'red'})).toBe('foo text-red-200')
-    expect(builder({ color: 'red', disabled: true })).toBe('foo text-gray-200 pointer-events-none')
-  })
-
-  test('default values can be a callback as well', () => {
-    const builder = clb({
-      base: 'foo',
-      defaults: {
-        color: props => props.disabled ? 'gray' : 'red'
-      },
-      variants: {
-        color: {
-          red: 'text-red-200',
-          gray: 'text-gray-200',
-        },
-        disabled: props => ({
-          'pointer-events-none': props.disabled,
-          'cursor-pointer': !props.disabled
-        }),
-      },
-    })
-
-    expect(builder({ disabled: false })).toBe('foo text-red-200 cursor-pointer')
-    expect(builder({ disabled: true })).toBe('foo text-gray-200 pointer-events-none')
-    expect(builder({ color: 'red', disabled: true })).toBe('foo text-red-200 pointer-events-none')
-  })
-})
-
-describe('callback directly for a variant', () => {
-  test('we should be able to use the variant in the callback', () => {
-    const builder = clb({
-      base: 'flex',
-      variants: {
-        collapseBelow: {
-          "sm": "flex-row sm:flex-col",
-          "md": "flex-row md:flex-col",
-          "lg": "flex-row lg:flex-col",
-        },
-      },
-    })
-
-    expect(builder({ collapseBelow: "sm" })).toBe('flex flex-row sm:flex-col')
-  })
-
-  test('we should be able to use the variant in the callback', () => {
-    const builder = clb({
-      base: 'grid',
-      variants: {
-        gap: props => `gap-${props.gap} whoa cool`,
-      },
-    })
-
-    expect(builder({ gap: 1 })).toBe('grid gap-1 whoa cool')
-    expect(builder({ gap: 5 })).toBe('grid gap-5 whoa cool')
-  })
-})
-
-describe(`defaults that aren't variants`, () => {
-  test('if an option of undefined is provided it should use the default', () => {
-    const builder = clb({
-      base: 'foo',
-      defaults: {
-        tone: 'neutral',
-        type: 'outline',
-      },
-      variants: {
-        type: {
-          outline: ({ tone }) => ({
-            'color-neutral': tone === 'neutral',
-            'color-not-neutral': tone !== 'neutral',
-            'color-false': tone === false,
-            'color-null': tone === null,
-          })
-        },
-      },
-    })
-
-    expect(builder()).toBe('foo color-neutral')
-    expect(builder({ tone: 'neutral' })).toBe('foo color-neutral')
-    expect(builder({ tone: 'something else' })).toBe('foo color-not-neutral')
-
-    expect(builder({ tone: undefined })).toBe('foo color-neutral')
-    expect(builder({ tone: null })).toBe('foo color-not-neutral color-null')
-    expect(builder({ tone: false })).toBe('foo color-not-neutral color-false')
-  })
-
+describe(`defaultVariants that aren't variants`, () => {
   test('weird and likely bad key names like null, undefined', () => {
     const builder = clb({
       base: 'foo',
-      defaults: {
+      defaultVariants: {
         tone: 'neutral',
       },
       variants: {
@@ -234,5 +127,78 @@ describe(`defaults that aren't variants`, () => {
     expect(builder({ tone: null })).toBe('foo tone-neutral')
     expect(builder({ tone: undefined })).toBe('foo tone-neutral')
     expect(builder({ tone: false })).toBe('foo tone-false')
+  })
+})
+
+describe(`compound variants`, () => {
+  test('basic', () => {
+    const builder = clb({
+      base: 'base',
+      compoundVariants: [
+        { color: 'red', classes: 'neat' },
+      ],
+    })
+
+    expect(builder({ color: 'blue' })).toBe('base')
+    expect(builder({ color: 'red' })).toBe('base neat')
+  })
+
+  test('multiple', () => {
+    const builder = clb({
+      base: 'base',
+      compoundVariants: [
+        { color: "red", size: "small", classes: "red small" },
+        { color: "blue", size: "large", classes: "blue large" },
+        { color: "blue", size: "large", disabled: true, classes: "blue large disabled" },
+      ],
+    })
+
+    expect(builder({ color: "red", size: "small" })).toBe('base red small')
+    expect(builder({ color: "blue", size: "large" })).toBe('base blue large')
+    expect(builder({ color: "blue", size: "large", disabled: true })).toBe('base blue large blue large disabled')
+    expect(builder({ color: "red", size: "large" })).toBe('base')
+    expect(builder({ color: "blue", size: "small" })).toBe('base')
+  })
+
+  test('with the defaults', () => {
+    const builder = clb({
+      base: 'base',
+      defaultVariants: {
+        color: 'red',
+      },
+      compoundVariants: [
+        { color: 'red', size: 'sm', classes: 'red sm' },
+      ],
+    })
+
+    expect(builder({ size: "sm" })).toBe('base red sm')
+  })
+
+  test('with additional props that do not matter', () => {
+    const builder = clb({
+      base: 'base',
+      compoundVariants: [
+        { color: 'red', size: 'sm', classes: 'red sm' },
+      ],
+    })
+
+    expect(builder({ color: 'red', size: "sm", random: '12345' })).toBe('base red sm')
+  })
+
+  test('false undefined null 0', () => {
+    const builder = clb({
+      base: 'base',
+      compoundVariants: [
+        { test: false, more: 5, classes: 'test false more five' },
+        { test: undefined, more: 5, classes: 'test undefined more five' },
+        { test: null, more: 5, classes: 'test null more five' },
+        { test: 0, more: 5, classes: 'test zero more five' },
+      ],
+    })
+
+    expect(builder({ test: false, more: 5 })).toBe('base test false more five')
+    expect(builder({ test: undefined, more: 5 })).toBe('base test undefined more five')
+    expect(builder({ test: null, more: 5 })).toBe('base test null more five')
+    expect(builder({ test: 0, more: 5 })).toBe('base test zero more five')
   })
 })

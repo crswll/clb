@@ -1,7 +1,6 @@
-const isFunction = maybeFunction => typeof maybeFunction === "function"
 const isBoolean = maybeBoolean => typeof maybeBoolean === "boolean"
-const callIfFunction = (value, ...optionalArguments) => isFunction(value) ? value(...optionalArguments) : value
 const toStringIfBoolean = value => isBoolean(value) ? String(value) : value
+const isSimpleSubset = (a, b) => Object.entries(a).every(([key, value]) => b[key] === value)
 
 // https://github.com/jorgebucaran/classcat
 function cc (names) {
@@ -27,44 +26,34 @@ function cc (names) {
 const classListBuilder = (schema = {}) => (options = {}) => {
   const {
     base,
-    defaults: unprocessedDefaults = {},
+    defaultVariants = {},
     variants = {},
+    compoundVariants = [],
   } = schema
 
-  const defaults = Object
-    .entries(unprocessedDefaults)
-    .reduce((out, [key, value]) => ({
-      ...out, [key]: callIfFunction(value, options)
-    }), {})
+  const currentVariants = {
+    ...defaultVariants,
+    ...variants
+  }
 
-  // Defaults should be used when the option value is `undefined`.
-  const optionsWithUndefinedRemoved = Object
-    .entries(options)
-    .reduce((out, [optionName, optionValue]) => {
-      if (optionValue === undefined) return out
-      return { ...out, [optionName]: optionValue }
-    }, {})
-
-  const callbackArguments = {
-    ...defaults,
-    ...optionsWithUndefinedRemoved,
+  const currentOptions = {
+    ...defaultVariants,
+    ...options,
   }
 
   return cc([
-    callIfFunction(base, callbackArguments),
-    Object.keys({ ...defaults, ...variants }).map(variantName => {
-      if (isFunction(variants[variantName])) {
-        return variants[variantName](callbackArguments)
-      }
-
-      return variants[variantName] && callIfFunction(
-        variants[variantName][
-          toStringIfBoolean(options[variantName]) ||
-          defaults[variantName]
-        ],
-        callbackArguments
-      )
+    base,
+    Object.keys(currentVariants).map(variantName => {
+      return variants[variantName] && variants[variantName][
+        toStringIfBoolean(options[variantName]) || defaultVariants[variantName]
+      ]
     }),
+    compoundVariants.reduce((list, { classes, ...compoundVariantOptions }) => {
+      if (isSimpleSubset(compoundVariantOptions, currentOptions)) {
+        list.push(classes)
+      }
+      return list
+    }, [])
   ])
 }
 
