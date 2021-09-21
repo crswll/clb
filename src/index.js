@@ -3,7 +3,7 @@ const isBoolean = maybeBoolean => typeof maybeBoolean === "boolean"
 const toStringIfBoolean = value => isBoolean(value) ? String(value) : value
 const isSimpleSubset = (a, b) => Object.entries(a).every(([key, value]) => b[key] === value)
 
-const classListBuilder = (schema = {}) => (options = {}) => {
+const clb = (schema = {}) => (options = {}) => {
   const {
     base,
     defaultVariants = {},
@@ -37,4 +37,4 @@ const classListBuilder = (schema = {}) => (options = {}) => {
   ])
 }
 
-module.exports = classListBuilder
+module.exports = clb

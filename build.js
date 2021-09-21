@@ -1,17 +1,12 @@
-require('esbuild').buildSync({
-  entryPoints: ['index.js'],
-  outfile: 'dist/index.cjs.js',
-  format: 'cjs',
+const esbuild = require('esbuild')
+
+const config = ({ format }) => ({
+  entryPoints: ['src/index.js'],
+  outfile: `dist/index.${format}.js`,
+  format: format,
   bundle: true,
-  minify: true,
   platform: 'node',
 })
 
-require('esbuild').buildSync({
-  entryPoints: ['index.js'],
-  outfile: 'dist/index.esm.js',
-  format: 'esm',
-  bundle: true,
-  minify: true,
-  platform: 'node',
-})
+esbuild.buildSync(config({ format: 'cjs' }))
+esbuild.buildSync(config({ format: 'esm' }))
