@@ -1,7 +1,7 @@
 {
   "name": "clb",
   "version": "1.0.0",
-  "main": "dist/index.cjs.js",
+  "main": "src/index.js",
   "module": "dist/index.esm.js",
   "files": [
     "dist"
