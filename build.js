@@ -1,7 +1,7 @@
 const esbuild = require('esbuild')
 
 const config = ({ format }) => ({
-  entryPoints: ['index.js'],
+  entryPoints: ['src/index.js'],
   outfile: `dist/index.${format}.js`,
   format: format,
   bundle: true,
