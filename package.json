@@ -1,7 +1,8 @@
 {
   "name": "clb",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "scripts": {
     "build": "node build.js",
     "test": "jest --coverage",
