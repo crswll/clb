@@ -17,21 +17,12 @@ npm install clb
 
 ```js
 const clb = require('clb')
-/*
-  All `callbacks` mentioned below get the default values merged
-  with the options you pass to the builder.
-*/
+
 const buttonBuilder = clb({
 
-  /*
-    This can be anything `classnames` accepts or a callback.
-  */
+  /* This can be anything `classnames` accepts. */
   base: 'font-serif rounded-2xl',
 
-  /*
-    These values should be a string or a callback that
-    returns a string.
-  */
   defaultVariants: {
     color: 'gray',
     size: 'medium',
@@ -40,7 +31,6 @@ const buttonBuilder = clb({
 
   /*
     The value for each variant value below can be anything
-    `classnames` accepts or a callback that returns anything
     `classnames` accepts.
   */
   variants: {
