@@ -32,7 +32,7 @@ const buttonBuilder = clb({
     These values should be a string or a callback that
     returns a string.
   */
-  defaults: {
+  defaultVariants: {
     color: 'gray',
     size: 'medium',
     spacing: 'medium',
@@ -80,34 +80,36 @@ const clb = require('clb')
 
 const buttonBuilder = clb({
   base: 'font-serif rounded-2xl',
-  defaults: {
+  defaultVariants: {
     color: 'gray',
+    size: 'small',
   },
   variants: {
-    color: {
-      gray: props => ({
-        'text-gray-800 bg-gray-800': !props.disabled,
-        'text-gray-400 bg-gray-200': props.disabled,
-      }),
-      red: props => ({
-        'text-red-800 bg-red-800': !props.disabled,
-        'text-red-400 bg-red-200': props.disabled,
-      }),
+    size: {
+      small: 'text-sm p-2',
     },
     disabled: {
       true: 'cursor-not-allowed',
     },
   },
+  compoundVariants: [
+    { color: 'gray', disabled: true, classes: 'text-gray-200 bg-gray-50' },
+    { color: 'gray', disabled: false, classes: 'text-gray-800 bg-gray-200' },
+    { color: 'red', disabled: true, classes: 'text-red-200 bg-red-50' },
+    { color: 'red', disabled: false, classes: 'text-red-800 bg-red-200' },
+    { color: 'blue', disabled: true, classes: 'text-blue-200 bg-blue-50' },
+    { color: 'blue', disabled: false, classes: 'text-blue-800 bg-blue-200' },
+  ],
 })
 
 buttonBuilder()
-// -> font-serif rounded-2xl text-gray-800 bg-gray-800
+// -> font-serif rounded-2xl text-sm p-2 text-gray-800 bg-gray-800
 
 buttonBuilder({ disabled: true })
-// -> font-serif rounded-2xl text-gray-400 bg-gray-200 cursor-not-allowed
+// -> font-serif rounded-2xl text-sm p-2 text-gray-200 bg-gray-50 cursor-not-allowed
 
 buttonBuilder({ color: 'red', disabled: true })
-// -> font-serif rounded-2xl text-red-400 bg-red-200 cursor-not-allowed
+// -> font-serif rounded-2xl text-sm p-2 text-red-200 bg-red-50 cursor-not-allowed
 ```
 
 ### Usage With Vue / React / Others
@@ -118,26 +120,28 @@ None of this code is actually tested but should be *pretty* close.
 ```js
 import clb from 'clb'
 
-const buttonClasses = clb({
+const buttonBuilder = clb({
   base: 'font-serif rounded-2xl',
-  defaults: {
+  defaultVariants: {
     color: 'gray',
+    size: 'small',
   },
   variants: {
-    color: {
-      gray: props => ({
-        'text-gray-800 bg-gray-800': !props.disabled,
-        'text-gray-400 bg-gray-200': props.disabled,
-      }),
-      red: props => ({
-        'text-red-800 bg-red-800': !props.disabled,
-        'text-red-400 bg-red-200': props.disabled,
-      }),
+    size: {
+      small: 'text-sm p-2',
     },
     disabled: {
       true: 'cursor-not-allowed',
     },
   },
+  compoundVariants: [
+    { color: 'gray', disabled: true, classes: 'text-gray-200 bg-gray-50' },
+    { color: 'gray', disabled: false, classes: 'text-gray-800 bg-gray-200' },
+    { color: 'red', disabled: true, classes: 'text-red-200 bg-red-50' },
+    { color: 'red', disabled: false, classes: 'text-red-800 bg-red-200' },
+    { color: 'blue', disabled: true, classes: 'text-blue-200 bg-blue-50' },
+    { color: 'blue', disabled: false, classes: 'text-blue-800 bg-blue-200' },
+  ],
 })
 
 export default buttonClasses
