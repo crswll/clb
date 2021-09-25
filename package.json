@@ -11,6 +11,7 @@
   "keywords": [
     "classnames"
   ],
+  "files": ["dist/*.js"],
   "author": "Bill Criswell",
   "license": "MIT",
   "devDependencies": {
