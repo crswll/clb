@@ -11,6 +11,15 @@ const clb = (schema = {}) => (options = {}) => {
     compoundVariants = [],
   } = schema
 
+  const processedOptions = Object.entries(options).reduce((acc, [key, value]) => {
+    if (value === undefined) {
+      return acc
+    }
+
+    acc[key] = value
+    return acc
+  }, {})
+
   const currentVariants = {
     ...defaultVariants,
     ...variants
@@ -18,7 +27,7 @@ const clb = (schema = {}) => (options = {}) => {
 
   const currentOptions = {
     ...defaultVariants,
-    ...options,
+    ...processedOptions,
   }
 
   return cc([

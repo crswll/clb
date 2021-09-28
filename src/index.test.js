@@ -114,7 +114,6 @@ describe(`defaultVariants that aren't variants`, () => {
       variants: {
         tone: {
           null: 'tone-null',
-          undefined: 'tone-undefined',
           false: 'tone-false',
           neutral: 'tone-neutral'
         },
@@ -167,7 +166,7 @@ describe(`compound variants`, () => {
         color: 'red',
       },
       compoundVariants: [
-        { color: 'red', size: 'sm', classes: 'red sm' },
+        { size: 'sm', classes: 'red sm' },
       ],
     })
 
@@ -185,20 +184,35 @@ describe(`compound variants`, () => {
     expect(builder({ color: 'red', size: "sm", random: '12345' })).toBe('base red sm')
   })
 
-  test('false undefined null 0', () => {
+  test('option being undefined should use the defaultVariant', () => {
+    const builder = clb({
+      base: 'base',
+      defaultVariants: {
+        tone: 'neutral',
+      },
+      compoundVariants: [
+        { tone: 'neutral', classes: 'neutral' },
+      ],
+    })
+
+    expect(builder({ tone: undefined })).toBe('base neutral')
+    expect(builder({ tone: 'neutral' })).toBe('base neutral')
+  })
+
+  test('false null 0', () => {
     const builder = clb({
       base: 'base',
       compoundVariants: [
         { test: false, more: 5, classes: 'test false more five' },
-        { test: undefined, more: 5, classes: 'test undefined more five' },
         { test: null, more: 5, classes: 'test null more five' },
         { test: 0, more: 5, classes: 'test zero more five' },
+        { test: undefined, more: 5, classes: 'test undefined more five' },
       ],
     })
 
     expect(builder({ test: false, more: 5 })).toBe('base test false more five')
-    expect(builder({ test: undefined, more: 5 })).toBe('base test undefined more five')
     expect(builder({ test: null, more: 5 })).toBe('base test null more five')
     expect(builder({ test: 0, more: 5 })).toBe('base test zero more five')
+    expect(builder({ test: undefined, more: 5 })).toBe('base test undefined more five')
   })
 })
