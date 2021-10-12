@@ -11,29 +11,26 @@ const clb = (schema = {}) => (options = {}) => {
     compoundVariants = [],
   } = schema
 
-  const processedOptions = Object.entries(options).reduce((acc, [key, value]) => {
-    if (value === undefined) {
+  const optionsWithUndefinedsRemoved = Object
+    .entries(options)
+    .reduce((acc, [key, value]) => {
+      if (value === undefined) {
+        return acc
+      }
+
+      acc[key] = value
       return acc
-    }
-
-    acc[key] = value
-    return acc
-  }, {})
-
-  const currentVariants = {
-    ...defaultVariants,
-    ...variants
-  }
+    }, {})
 
   const currentOptions = {
     ...defaultVariants,
-    ...processedOptions,
+    ...optionsWithUndefinedsRemoved,
   }
 
   return cc([
     base,
-    Object.keys(currentVariants).map(variantName => {
-      return variants[variantName] && variants[variantName][
+    Object.keys(variants).map(variantName => {
+      return variants[variantName][
         toStringIfBoolean(options[variantName]) || defaultVariants[variantName]
       ]
     }),
