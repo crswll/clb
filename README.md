@@ -4,6 +4,8 @@ clb (class list builder) is a small, utility function that builds a class list b
 
 It's like [classnames](https://github.com/JedWatson/classnames) and [Stitches](https://stitches.dev/) made a really lazy baby. It works really well with [tailwindcss](https://tailwindcss.com/) but will work with any functional / utility / atomic css approach.
 
+If you're looking for a very similar thing with type support check out https://github.com/joe-bell/cva.
+
 ## Install It
 
 ```bash
