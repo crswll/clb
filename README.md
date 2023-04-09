@@ -65,7 +65,7 @@ buttonBuilder({ color: 'blue', size: 'large' })
 // -> font-serif rounded-2xl text-blue-800 bg-blue-800 text-lg p-6
 ```
 
-### A Little More Fancy
+### A Little More Fancy Pants
 
 ```js
 const clb = require('clb')
