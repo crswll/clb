@@ -180,3 +180,10 @@ const Button = ({ color, disabled }) => (
   Whoa Cool Button
 </button>
 ```
+
+### Use as clsx
+When `clb` doesn't have a `variant` or `compountVariant` key it passes everthing to `clsx`, which is like `classnames` if you're familiar with that.
+
+```js
+clb('foo', { bar: true })
+// -> foo bar
