@@ -1,9 +1,10 @@
 const clsx = require('clsx')
-const isBoolean = maybeBoolean => typeof maybeBoolean === "boolean"
-const toStringIfBoolean = value => isBoolean(value) ? String(value) : value
-const isSimpleSubset = (a, b) => Object.entries(a).every(([key, value]) => b[key] === value)
+const isBoolean = (maybeBoolean) => typeof maybeBoolean === 'boolean'
+const toStringIfBoolean = (value) => (isBoolean(value) ? String(value) : value)
+const isSimpleSubset = (a, b) =>
+  Object.entries(a).every(([key, value]) => b[key] === value)
 
-function clb (schema = {}, ...rest) {
+function clb(schema = {}, ...rest) {
   const {
     base,
     defaultVariants = {},
@@ -27,13 +28,17 @@ function clb (schema = {}, ...rest) {
 
     return clsx([
       base,
-      Object.keys(variants).map(variantName => {
-        const optionKey = toStringIfBoolean(options[variantName]) || defaultVariants[variantName]
+      Object.keys(variants).map((variantName) => {
+        const optionKey =
+          toStringIfBoolean(options[variantName]) ||
+          defaultVariants[variantName]
         return variants[variantName][optionKey]
       }),
       compoundVariants
-        .filter(({ classes, ...compoundVariantOptions }) => isSimpleSubset(compoundVariantOptions, currentOptions))
-        .map(({ classes }) => classes)
+        .filter(({ classes, ...compoundVariantOptions }) =>
+          isSimpleSubset(compoundVariantOptions, currentOptions)
+        )
+        .map(({ classes }) => classes),
     ])
   }
 }
