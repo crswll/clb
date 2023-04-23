@@ -1,18 +1,16 @@
 const clb = require("./")
 
+describe('fallback', () => {
+  test('when no variants or compoudVariants are passed clb is just clsx', () => {
+    expect(clb('')).toBe('')
+    expect(clb('foo bar')).toBe('foo bar')
+    expect(clb(['foo', 'bar'])).toBe('foo bar')
+    expect(clb(['foo'], ['bar'])).toBe('foo bar')
+    expect(clb({ foo: true, bar: true }, { baz: true })).toBe('foo bar baz')
+  })
+})
+
 describe('strange edge cases', () => {
-  test('no schema passed should result in no classes', () => {
-    const builder = clb()
-
-    expect(builder({ color: 'red' })).toBe('')
-  })
-
-  test('no schema and no options should result in no classes as well', () => {
-    const builder = clb()
-
-    expect(builder()).toBe('')
-  })
-
   test('variant that does not make sense does not error', () => {
     const builder = clb({
       variants: {
